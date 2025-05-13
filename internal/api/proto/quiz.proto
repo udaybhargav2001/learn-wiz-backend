@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package quiz;
+
+// Use pb directory for generated Go code; retain quizpb package name
+option go_package = "learn-wiz-backend/internal/api/pb;quizpb";
+
+// Question entity sent to client (without correct answer index)
+message Question {
+  string id = 1;
+  string stem = 2;
+  repeated string options = 3;
+  double difficulty_rating = 4;
+  string topic_id = 5;
+}
+
+message GetNextQuestionRequest {
+  string student_id = 1;
+  string topic_id = 2;
+}
+
+message QuestionResponse {
+  Question question = 1;
+}
+
+message SubmitAnswerRequest {
+  string student_id = 1;
+  string question_id = 2;
+  int32 chosen_index = 3;
+  int64 time_taken_ms = 4;
+}
+
+message SubmitAnswerResponse {
+  bool correct = 1;
+  double new_student_rating = 2;
+  double question_rating = 3;
+  Question next_question = 4;
+}
+
+service QuizService {
+  rpc GetNextQuestion (GetNextQuestionRequest) returns (QuestionResponse);
+  rpc SubmitAnswer (SubmitAnswerRequest) returns (SubmitAnswerResponse);
+} 
